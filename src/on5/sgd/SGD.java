@@ -46,7 +46,6 @@ public class SGD implements Recommender{
 
 	public void calculateSVD() {
 		userMovieMatrix = userMovieMatrix.transpose();
-		START_VALUE = calculateDefaultValue();
 
 		Matrix result = calculatePredictedMatrix(null, null, null); //
 		result = result.transpose();
@@ -55,23 +54,13 @@ public class SGD implements Recommender{
 		this.updatedUserMovieMatrix = result.getArray();
 	}
 	
-	private double calculateDefaultValue() {
-		double total = 0;
-		for (int i = 0; i < Constants.NO_OF_MOVIES; i++) {
-			for (int j = 0; j < Constants.NO_OF_USERS; j++) {
-				total += userMovieMatrix.get(i, j);
-			}
-		}
-		return total / (Constants.NO_OF_MOVIES * Constants.NO_OF_USERS);
-	}
-	
 	private Matrix calculatePredictedMatrix(Matrix u, Matrix v,
 			double[] singularValues) {
 
 		Matrix result = null;
 		int counter = COUNTER;
 		u = new Matrix(Constants.NO_OF_MOVIES, NUM_FEATURES, START_VALUE);
-		v = new Matrix(Constants.NO_OF_USERS, NUM_FEATURES, 0.1);
+		v = new Matrix(Constants.NO_OF_USERS, NUM_FEATURES, START_VALUE);
 		while (counter != 0) {
 			result = u.times(v.transpose());
 			update(u, v, result);
